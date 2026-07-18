@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Reveal from "../components/Reveal.jsx";
@@ -45,6 +45,7 @@ const CustomCakeOrder = () => {
     paymentMethod: "cash",
   });
   const [referenceFileName, setReferenceFileName] = useState("");
+  const fileInputRef = useRef(null);
   const [submitting, setSubmitting] = useState(false);
 
   const estimatedTotal = estimatePrice(form.size, form.tiers);
@@ -77,6 +78,19 @@ const CustomCakeOrder = () => {
         guestEmail: form.guestEmail,
         guestPhone: form.guestPhone,
       });
+
+      setForm({
+  flavor: flavors[0],
+  size: sizes[0],
+  tiers: 1,
+  occasion: "",
+  message: "",
+  neededBy: "",
+  guestName: user?.name || "",
+  guestEmail: user?.email || "",
+  guestPhone: "",
+  paymentMethod: "cash",
+});
       toast.success("Your custom cake request has been sent!");
       navigate("/orders");
     } catch (err) {
@@ -180,11 +194,12 @@ const CustomCakeOrder = () => {
                   className="h-20 w-20 rounded-2xl text-[10px] shrink-0"
                 />
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setReferenceFileName(e.target.files?.[0]?.name || "")}
-                  className="max-w-full text-sm text-cocoa-500 file:mr-4 file:rounded-full file:border-0 file:bg-mustard-500 file:px-4 file:py-2 file:text-cocoa-800 file:font-semibold file:cursor-pointer"
-                />
+  ref={fileInputRef}
+  type="file"
+  accept="image/*"
+  onChange={(e) => setReferenceFileName(e.target.files?.[0]?.name || "")}
+  className="max-w-full text-sm text-cocoa-500 file:mr-4 file:rounded-full file:border-0 file:bg-mustard-500 file:px-4 file:py-2 file:text-cocoa-800 file:font-semibold file:cursor-pointer"
+/>
               </div>
               {/* TODO: connect this to real file storage (Cloudinary/S3) and send the URL to the backend */}
             </div>
